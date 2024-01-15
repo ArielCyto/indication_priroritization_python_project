@@ -1,0 +1,77 @@
+[tool.poetry]
+name = "py-project-template"
+version = "0.1.5"
+description = ""
+authors = ["Ron Poches <ron.poches@cytoreason.com>", "Lior Garber <lior.garber@cytoreason.com>"]
+readme = "README.md"
+packages = [
+    { include = "sample_pkg", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pycytocc = { version = "^1.0.4", source = "artifact-registry" }
+fire = "^0.5.0"
+tabulate = "^0.9.0"
+loguru = "^0.7.2"
+
+[tool.poetry.group.dev.dependencies]
+black = { version = "23.9.*", allow-prereleases = true, markers = "platform_python_implementation == 'CPython'" }
+flake8 = "^6.1.0"
+pylint = "^3.0.2"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.1"
+pytest-cov = "^4.0"
+pytest-mock = "^3.9"
+
+[tool.poetry.group.cytocc_env.dependencies]
+dill = "*"
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.2.6"
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "artifact-registry"
+url = "https://europe-west1-python.pkg.dev/cytoreason/cytoreason-python-all/simple/"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "supplemental"
+
+[tool.poetry.scripts]
+hello-world = 'sample_pkg.sample:run'
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:"
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+skip-string-normalization = true
+[tool.flake8]
+max-line-length = 88
+count = true
+ignore = ['E402', 'W291', 'E501']
+
+[tool.pytest.ini_options]
+pythonpath = ['src']
+testpaths = ['tests/*']
+markers = [
+    "unittest: mark a test as a unit test.",
+    "intergrationtest: mark test as integration test."]
+
+
+
+
+
+
+
+
+
