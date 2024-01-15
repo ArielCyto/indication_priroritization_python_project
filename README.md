@@ -1,0 +1,2 @@
+# indication_priroritization_python_project
+converting the indication_priroritization R code to Python
