@@ -1,12 +1,15 @@
 import numpy as np
-from pycytocc.client import get_files
+from pycytocc.client import get_outputs
+import pybigquery
+import pandas as pd
+
 
 # load input data
-expression_matrix = get_files("wf-219a0c80f1")
-annotation_table = get_files("wf-c546d82645")
+expression_matrix = pd.read_csv("algorithm_data/small_expression_matrix.csv",index_col=[0])
+annotation_table = pd.read_csv("algorithm_data/small_annotation_table.csv",index_col=[0])
 
 # define effector genes by the user
-effector_genes = ['BRCA1', 'BRCA2', 'HOXB13']
+effector_genes = ['ABCA1',	'ABCA2', 'ABCA3', 'NAT2']
 
 # check if the genes are available:
 submit = False
