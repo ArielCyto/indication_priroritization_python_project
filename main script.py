@@ -1,1 +1,1 @@
-print("Checki")
+print("Check")
