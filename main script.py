@@ -34,20 +34,24 @@ if (submit == True):
 
     # calculate the group median
     groups = annotation_table['group'].unique()
-    groups_df = pd.DataFrame(index = [groups], columns= ['median'])
+    groups_df = pd.DataFrame(index=[groups], columns=['median'])
     for group in groups:
        tmp = annotation_table.loc[annotation_table['group'] == group]
        tmp_median = np.median(tmp['effector_genes_average'])
        groups_df.loc[group, 'median'] = tmp_median
 
-    print(groups_df)
+
+    # Generate final table for the customer
+    final_table = ((annotation_table.drop(['sample_id', 'effector_genes_average'], axis=1)).drop_duplicates())
+    final_table.index = [groups]
+    final_table['median'] = groups_df['median']
+    print(final_table.sort_values(by='median',ascending=False))
 
 
-    # bootstrapping per group
+   # bootstrapping per group
 
    # group_median = []
    # x = np.random.normal(loc=300.0, size=1000)
-   # print(np.mean(x))
    # for i in range(50):
    #     y = random.sample(x.tolist(), 4)
    #     median = np.median(y)
