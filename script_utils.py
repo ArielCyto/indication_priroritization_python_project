@@ -33,6 +33,10 @@ def calc_avg(gene_list):
     effector_genes_expression_matrix = expression_matrix[expression_matrix.columns.intersection(gene_list)]
     return(effector_genes_expression_matrix.mean(axis=1))
 
+def calc_median(gene_list):
+    effector_genes_expression_matrix = expression_matrix[expression_matrix.columns.intersection(gene_list)]
+    return(effector_genes_expression_matrix.median(axis=1))
+
 # calculate median, CI_low and CI_high for given and return the results in df
 def calc_statistics(annotation_table):
     groups = annotation_table['group'].unique()
@@ -66,7 +70,7 @@ def rank_groups_by_genes(gene_list, rank_by = 'CI_low'):
     # run analysis
     if (submit == True):
         # per sample (row), calculate the selected effector_genes average expression
-        annotation_table['effector_genes_average'] = calc_avg(gene_list)
+        annotation_table['effector_genes_average'] = calc_median(gene_list)
 
         # get a df with the calculated 'median', 'CI_low', 'CI_high' per group
         stat_df = calc_statistics(annotation_table)
