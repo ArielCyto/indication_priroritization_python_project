@@ -29,9 +29,9 @@ def check_input_genes(gene_list):
     return submit
 
 # calculate average expression per sample by a given gene_list
-def calc_avg(gene_list):
-    effector_genes_expression_matrix = expression_matrix[expression_matrix.columns.intersection(gene_list)]
-    return(effector_genes_expression_matrix.mean(axis=1))
+# def calc_avg(gene_list):
+#     effector_genes_expression_matrix = expression_matrix[expression_matrix.columns.intersection(gene_list)]
+#     return(effector_genes_expression_matrix.mean(axis=1))
 
 def calc_median(gene_list):
     effector_genes_expression_matrix = expression_matrix[expression_matrix.columns.intersection(gene_list)]
@@ -44,19 +44,19 @@ def calc_statistics(annotation_table):
 
     # calculate the median average expression per group
     for group in groups:
-        group_median = np.median((annotation_table.loc[annotation_table['group'] == group])['effector_genes_average'])
+        group_median = np.median((annotation_table.loc[annotation_table['group'] == group])['effector_genes_median'])
         groups_df.loc[group, 'median'] = group_median
 
     # calculate CI_low, CI_high per group
     for group in groups:
         # collect all the group's sample_id into group_samples object
         group_samples = annotation_table.loc[annotation_table['group'] == group]['sample_id']
-        # collect the average expression of these samples into group_average_vector
-        group_average_vector = annotation_table.loc[annotation_table['sample_id'].isin(group_samples)][
-            'effector_genes_average']
-        group_average_vector = (group_average_vector.to_numpy(),)  # samples must be in a sequence
-        # run bootstrapping on group_average_vector and extract the CI_low, CI_high results
-        res = bootstrap(group_average_vector, np.median, confidence_level=0.95)
+        # collect the average expression of these samples into group_median_vector
+        group_median_vector = annotation_table.loc[annotation_table['sample_id'].isin(group_samples)][
+            'effector_genes_median']
+        group_median_vector = (group_median_vector.to_numpy(),)  # samples must be in a sequence
+        # run bootstrapping on group_median_vector and extract the CI_low, CI_high results
+        res = bootstrap(group_median_vector, np.median, confidence_level=0.95)
         CI_low, CI_high = res.confidence_interval
         groups_df.loc[group, 'CI_low'] = CI_low
         groups_df.loc[group, 'CI_high'] = CI_high
@@ -69,14 +69,14 @@ def rank_groups_by_genes(gene_list, rank_by = 'CI_low'):
 
     # run analysis
     if (submit == True):
-        # per sample (row), calculate the selected effector_genes average expression
-        annotation_table['effector_genes_average'] = calc_median(gene_list)
+        # per sample (row), calculate the selected effector_genes median expression
+        annotation_table['effector_genes_median'] = calc_median(gene_list)
 
         # get a df with the calculated 'median', 'CI_low', 'CI_high' per group
         stat_df = calc_statistics(annotation_table)
 
         # Generate final table to display for the customer
-        final_table = ((annotation_table.drop(['sample_id', 'effector_genes_average'], axis=1)).drop_duplicates())
+        final_table = ((annotation_table.drop(['sample_id', 'effector_genes_median'], axis=1)).drop_duplicates())
         final_table.index = [annotation_table['group'].unique()]
         final_table['median'] = stat_df['median']
         final_table['CI_low'] = stat_df['CI_low']
